@@ -140,6 +140,26 @@ class App extends React.Component {
 }
 ```
 
+You can choose to pass the service worker path and scope if needed. 
+```js
+import { register, unregister } from 'next-offline/runtime'
+
+class App extends React.Component {
+  componentDidMount () {
+    /** 
+      * Default service worker path is '/service-worker.js' 
+      * Refer https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register for default scope rules
+      *
+    */
+    register('/sub_folder/service-worker.js', {scope: '/sub_folder'}) 
+  }
+  componentWillUnmount () {
+    unregister()
+  }
+  ..
+}
+```
+
 If you're handling registration on your own, pass `dontAutoRegisterSw` to next-offline.
 ```js
 // next.config.js
@@ -185,7 +205,7 @@ On top of the workbox options, next-offline has some options built in flags to g
     <tr>
       <td>generateSw</td>
       <td>Boolean</td>
-      <td>If false, next-offline will not generate a service worker and will instead try to modify workboxOpts.swSrc</td>
+      <td>If false, next-offline will not generate a service worker and will instead try to modify the file found in workboxOpts.swSrc using WorkBox's [Inject Plugin](https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin#injectmanifest_plugin)</td>
       <td>true</td>
     </tr>
     <tr>
@@ -278,7 +298,7 @@ If you'd like to include some more or change the origin of your static files use
 
 ```js
 workboxOpts: {
-  modifyUrlPrefix: {
+  modifyURLPrefix: {
     'app': assetPrefix,
   },
   runtimeCaching: {...}
